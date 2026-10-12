@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin · Tienda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css?v=11">
+</head>
+<body>
+
+  <!-- ── SUPABASE NO CONFIGURADO ───────────────────────── -->
+  <div id="notConfigured" class="login-wrap hidden">
+    <div class="login-box" style="text-align:center">
+      <h1>Falta configurar</h1>
+      <p>Pegá tu <code>SUPABASE_URL</code> y <code>SUPABASE_ANON_KEY</code> en
+         <code>js/supabase-config.js</code> y recargá esta página.</p>
+    </div>
+  </div>
+
+  <!-- ── LOGIN ─────────────────────────────────────────── -->
+  <div id="login" class="login-wrap">
+    <form class="login-box" id="loginForm" autocomplete="on">
+      <h1>Admin</h1>
+      <p>Ingresá con tu cuenta para administrar el catálogo</p>
+      <label class="fld"><span>Email</span>
+        <input type="email" id="loginEmail" required autocomplete="username">
+      </label>
+      <label class="fld"><span>Contraseña</span>
+        <input type="password" id="loginPass" required autocomplete="current-password">
+      </label>
+      <button class="btn btn-dark" type="submit" id="loginBtn">Entrar</button>
+      <div class="login-err" id="loginErr"></div>
+    </form>
+  </div>
+
+  <!-- ── APP ───────────────────────────────────────────── -->
+  <div id="app" class="hidden">
+    <header class="adm-header">
+      <div class="adm-logo">TIENDA <span>· ADMIN</span></div>
+      <button class="btn btn-ghost" id="logoutBtn">Cerrar sesión</button>
+    </header>
+
+    <div class="wrap">
+      <div class="tabs">
+        <button class="tab active" data-tab="catalogo">Catálogo</button>
+        <button class="tab" data-tab="banners">Banners</button>
+        <button class="tab" data-tab="categorias">Categorías</button>
+        <button class="tab" data-tab="filas">Portada</button>
+        <button class="tab" data-tab="resenas">Reseñas</button>
+        <button class="tab" data-tab="pedidos">Pedidos</button>
+      </div>
+
+      <!-- Solo aparece si falta correr supabase/add-site-config.sql -->
+      <div class="card aviso-sql hidden" id="avisoSql">
+        <h2>Falta un paso en la base de datos</h2>
+        <p class="hint">
+          Las secciones de Banners, Categorías, Portada y Reseñas guardan en la
+          tabla <code>site_config</code>, que todavía no existe. Abrí Supabase →
+          SQL Editor, pegá el contenido de
+          <code>supabase/add-site-config.sql</code> y dale Run. Después recargá
+          esta página.
+        </p>
+        <p class="hint">Mientras tanto la tienda sigue andando con lo que está escrito en los archivos <code>js/</code>.</p>
+      </div>
+
+      <section id="tab-catalogo">
+        <p class="title-kicker">Tecnología fácil</p>
+        <h1 class="title-big">Catálogo</h1>
+
+        <!-- Nuevo producto -->
+        <div class="card">
+          <h2>Nuevo producto</h2>
+          <p class="hint">Se agrega al final del catálogo en la web, y arriba acá para que lo edites enseguida.</p>
+          <div class="img-row">
+            <input type="text" id="newName" placeholder="Ej: AirPods Pro 2">
+            <button class="btn btn-dark" id="createBtn" style="flex:none">Crear producto</button>
+          </div>
+        </div>
+
+        <!-- Lista de productos (render dinámico) -->
+        <div id="list"><div class="empty">Cargando productos…</div></div>
+      </section>
+
+      <!-- ── BANNERS ───────────────────────────────────── -->
+      <section id="tab-banners" class="hidden">
+        <p class="title-kicker">Lo primero que se ve</p>
+        <h1 class="title-big">Banners</h1>
+        <div class="card">
+          <p class="hint">
+            Se muestran en bucle, en el orden de esta lista. Medida
+            recomendada: <b>1920 × 560</b> para escritorio y <b>1080 × 1080</b>
+            para móvil. Si no cargás la de móvil se usa la de escritorio.
+          </p>
+          <button class="btn btn-dark" data-add="banner" style="flex:none">Agregar banner</button>
+        </div>
+        <div id="listBanners"><div class="empty">Cargando…</div></div>
+        <div class="guardar-barra" data-save="banners" hidden>
+          <span class="guardar-aviso">Hay cambios sin guardar</span>
+          <button class="btn btn-dark">Guardar banners</button>
+        </div>
+      </section>
+
+      <!-- ── CATEGORÍAS ────────────────────────────────── -->
+      <section id="tab-categorias" class="hidden">
+        <p class="title-kicker">El puzzle de la portada</p>
+        <h1 class="title-big">Categorías</h1>
+        <div class="card">
+          <p class="hint">
+            El diseño está armado para <b>cuatro</b>: la primera y la cuarta
+            son altas, la segunda y la tercera bajas. Con otra cantidad se ve,
+            pero pierde esa forma.
+          </p>
+          <p class="hint">
+            <b>Categoría del catálogo</b> es la que se abre al tocar la
+            tarjeta, y tiene que coincidir con la del producto en la pestaña
+            Catálogo. Si no coincide, la sección se abre vacía.
+          </p>
+          <button class="btn btn-dark" data-add="categoria" style="flex:none">Agregar categoría</button>
+        </div>
+        <div id="listCategorias"><div class="empty">Cargando…</div></div>
+        <div class="guardar-barra" data-save="categorias" hidden>
+          <span class="guardar-aviso">Hay cambios sin guardar</span>
+          <button class="btn btn-dark">Guardar categorías</button>
+        </div>
+      </section>
+
+      <!-- ── PORTADA ───────────────────────────────────── -->
+      <section id="tab-filas" class="hidden">
+        <p class="title-kicker">Qué productos se ven primero</p>
+        <h1 class="title-big">Portada</h1>
+        <div class="card">
+          <p class="hint">
+            Marcá los productos de cada fila y ordenalos con las flechas. Los
+            que no marques siguen en la tienda: se llega a ellos por las
+            categorías y el buscador.
+          </p>
+        </div>
+        <div id="listFilas"><div class="empty">Cargando…</div></div>
+        <div class="guardar-barra" data-save="filas" hidden>
+          <span class="guardar-aviso">Hay cambios sin guardar</span>
+          <button class="btn btn-dark">Guardar portada</button>
+        </div>
+      </section>
+
+      <!-- ── RESEÑAS ───────────────────────────────────── -->
+      <section id="tab-resenas" class="hidden">
+        <p class="title-kicker">Lo que dicen los clientes</p>
+        <h1 class="title-big">Reseñas</h1>
+        <div class="card">
+          <p class="hint" id="resumenResenas"></p>
+        </div>
+        <div id="listResenas"><div class="empty">Cargando…</div></div>
+      </section>
+
+      <!-- ── PEDIDOS ─────────────────────────────────────── -->
+      <section id="tab-pedidos" class="hidden">
+        <p class="title-kicker">Compras confirmadas</p>
+        <div class="card">
+          <div class="img-row">
+            <select id="filtroPedido"></select>
+            <button class="btn btn-ghost" id="recargarPedidos" style="flex:none">Actualizar</button>
+          </div>
+          <p class="hint" id="resumenPedidos"></p>
+          <p class="hint">
+            Un pedido aparece acá recién cuando Mercado Pago confirma el pago.
+            Los nuevos van arriba; al marcarlos como enviados bajan y quedan
+            apagados, pero los datos se siguen pudiendo abrir.
+          </p>
+        </div>
+        <div id="listPedidos"><div class="empty">Cargando…</div></div>
+      </section>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/ac.js"></script>
+  <script src="js/ap.js"></script>
+  <script src="js/ao.js"></script>
+  <script src="js/ar.js?v=11"></script>
+  <script src="js/as.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "airpods-store-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mercado Pago checkout + email notifications",
+  "dependencies": {
+    "mercadopago": "^2.0.17",
+    "resend": "^4.1.2"
+  }
+}
