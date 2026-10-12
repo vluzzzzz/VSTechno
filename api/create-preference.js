@@ -85,7 +85,9 @@ module.exports = async (req, res) => {
         status: err?.status || err?.statusCode,
         cause: err?.cause,
         hasToken: !!process.env.MERCADO_PAGO_ACCESS_TOKEN,
-        tokenPrefix: (process.env.MERCADO_PAGO_ACCESS_TOKEN || '').slice(0, 8),
+        tokenLen: (process.env.MERCADO_PAGO_ACCESS_TOKEN || '').length,
+        tokenDashes: ((process.env.MERCADO_PAGO_ACCESS_TOKEN || '').match(/-/g) || []).length,
+        looksLikePublicKey: /^APP_USR-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(process.env.MERCADO_PAGO_ACCESS_TOKEN || ''),
       },
     });
   }
