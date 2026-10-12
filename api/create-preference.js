@@ -49,7 +49,7 @@ module.exports = async (req, res) => {
         title: i.name,
         quantity: Number(i.qty),
         unit_price: Number(i.price),
-        currency_id: 'ARS',
+        currency_id: 'CLP',
       })),
       payer: {
         name: customer.name,
