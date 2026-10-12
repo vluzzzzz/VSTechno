@@ -109,7 +109,7 @@ module.exports = async (req, res) => {
     }
 
     const client = new MercadoPagoConfig({
-      accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
+      accessToken: (process.env.MERCADO_PAGO_ACCESS_TOKEN || '').trim(),
       options: { timeout: 8000 },
     });
 

@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
     const total = items.reduce((s, i) => s + i.price * i.qty, 0);
 
     const client = new MercadoPagoConfig({
-      accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
+      accessToken: (process.env.MERCADO_PAGO_ACCESS_TOKEN || '').trim(),
       options: { timeout: 10000 },
     });
 
@@ -78,17 +78,6 @@ module.exports = async (req, res) => {
     res.json({ init_point: result.init_point, id: result.id, _debug_notification_url: body.notification_url });
   } catch (err) {
     console.error('create-preference error:', err);
-    res.status(500).json({
-      error: 'Error al crear preferencia',
-      _debug: {
-        message: err?.message,
-        status: err?.status || err?.statusCode,
-        cause: err?.cause,
-        hasToken: !!process.env.MERCADO_PAGO_ACCESS_TOKEN,
-        tokenLen: (process.env.MERCADO_PAGO_ACCESS_TOKEN || '').length,
-        tokenDashes: ((process.env.MERCADO_PAGO_ACCESS_TOKEN || '').match(/-/g) || []).length,
-        looksLikePublicKey: /^APP_USR-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(process.env.MERCADO_PAGO_ACCESS_TOKEN || ''),
-      },
-    });
+    res.status(500).json({ error: 'Error al crear preferencia' });
   }
 };
