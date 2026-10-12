@@ -78,6 +78,15 @@ module.exports = async (req, res) => {
     res.json({ init_point: result.init_point, id: result.id, _debug_notification_url: body.notification_url });
   } catch (err) {
     console.error('create-preference error:', err);
-    res.status(500).json({ error: 'Error al crear preferencia' });
+    res.status(500).json({
+      error: 'Error al crear preferencia',
+      _debug: {
+        message: err?.message,
+        status: err?.status || err?.statusCode,
+        cause: err?.cause,
+        hasToken: !!process.env.MERCADO_PAGO_ACCESS_TOKEN,
+        tokenPrefix: (process.env.MERCADO_PAGO_ACCESS_TOKEN || '').slice(0, 8),
+      },
+    });
   }
 };
